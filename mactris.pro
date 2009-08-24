@@ -7,6 +7,7 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 RESOURCES = gfx/gfx.qrc
+ICON = gfx/icon1.icns
 
 # Input
 HEADERS += GameView.h MainWindow.h FieldView.h
