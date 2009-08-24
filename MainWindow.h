@@ -48,6 +48,7 @@ private:
     bool gameOver;
 
     void newGame();
+    void pauseGame();
     void takeNextBlock();
     void updateBlockData();
 
@@ -60,7 +61,6 @@ private:
     void deleteRow(const int aRow);
 
     bool needLevelUpdate();
-
 public:
     MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
@@ -69,6 +69,9 @@ public:
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+
+    inline bool isPause() { return pause; };
+    inline bool isGameOver() { return gameOver; };
 
 protected slots:
     void timerTick();

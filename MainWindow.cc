@@ -9,8 +9,9 @@
 #include <QWidget>
 #include <QtDebug>
 
-#include "MainWindow.h"
 #include "FieldView.h"
+#include "GameView.h"
+#include "MainWindow.h"
 
 static Block blocks[BLOCK_COUNT][BLOCK_STATES] = {
     // Block 1: XX
@@ -71,7 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
     scoreLabel->setMinimumWidth(90);
     levelLabel = new QLabel;
     levelLabel->setMinimumWidth(90);
-    fieldView = new FieldView(this, FIELD_COLUMNS, FIELD_ROWS, 32);
+
+    fieldView = new GameView(this, FIELD_COLUMNS, FIELD_ROWS, 32);
     nextStoneView = new FieldView(this, BLOCK_MAX_WIDTH, BLOCK_MAX_HEIGHT, 8);
 
     QVBoxLayout *vbox = new QVBoxLayout;
@@ -133,6 +135,13 @@ void MainWindow::newGame()
     pause = false;
     gameOver = false;
 
+    updateTimer();
+    updateViews();
+}
+
+void MainWindow::pauseGame()
+{
+    pause = !pause;
     updateTimer();
     updateViews();
 }
@@ -286,7 +295,10 @@ bool MainWindow::needLevelUpdate()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (pause || gameOver) {
+    if (event->key() == Qt::Key_P) {
+        pauseGame();
+        return;
+    } else if (pause || gameOver) {
         QWidget::keyPressEvent(event);
         return;
     }

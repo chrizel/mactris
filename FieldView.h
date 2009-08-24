@@ -12,7 +12,7 @@ class FieldView : public QWidget
 {
     Q_OBJECT
 
-private:
+protected:
     MainWindow *mainWindow;
     int columns;
     int rows;
