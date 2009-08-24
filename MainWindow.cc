@@ -1,12 +1,68 @@
+#include <QTimer>
 #include <QWidget>
+#include <QtDebug>
 
 #include "MainWindow.h"
 #include "FieldView.h"
 
+static Block blocks[BLOCK_COUNT][BLOCK_STATES] = {
+    // Block 1: XX
+    //          XX
+    { { {0,0,0,0}, {0,0,1,1}, {0,0,1,1}, {0,0,0,0} },
+      { {0,0,0,0}, {0,0,1,1}, {0,0,1,1}, {0,0,0,0} },
+      { {0,0,0,0}, {0,0,1,1}, {0,0,1,1}, {0,0,0,0} },
+      { {0,0,0,0}, {0,0,1,1}, {0,0,1,1}, {0,0,0,0} } },
+
+    // Block 2: XXX
+    //           X
+    { { {0,0,2,0}, {0,0,2,2}, {0,0,2,0}, {0,0,0,0} },
+      { {0,0,2,0}, {0,2,2,2}, {0,0,0,0}, {0,0,0,0} },
+      { {0,0,2,0}, {0,2,2,0}, {0,0,2,0}, {0,0,0,0} },
+      { {0,0,0,0}, {0,2,2,2}, {0,0,2,0}, {0,0,0,0} } },
+
+    // Block 3: XXX
+    //            X
+    { { {0,0,3,0}, {0,0,3,0}, {0,0,3,3}, {0,0,0,0} },
+      { {0,0,0,3}, {0,3,3,3}, {0,0,0,0}, {0,0,0,0} },
+      { {0,3,3,0}, {0,0,3,0}, {0,0,3,0}, {0,0,0,0} },
+      { {0,0,0,0}, {0,3,3,3}, {0,3,0,0}, {0,0,0,0} } },
+
+    // Block 4: XXX
+    //          X  
+    { { {0,0,4,4}, {0,0,4,0}, {0,0,4,0}, {0,0,0,0} },
+      { {0,4,0,0}, {0,4,4,4}, {0,0,0,0}, {0,0,0,0} },
+      { {0,0,4,0}, {0,0,4,0}, {0,4,4,0}, {0,0,0,0} },
+      { {0,0,0,0}, {0,4,4,4}, {0,0,0,4}, {0,0,0,0} } },
+
+    // Block 5:  XX
+    //          XX
+    { { {0,0,0,5}, {0,0,5,5}, {0,0,5,0}, {0,0,0,0} },
+      { {0,5,5,0}, {0,0,5,5}, {0,0,0,0}, {0,0,0,0} },
+      { {0,0,0,5}, {0,0,5,5}, {0,0,5,0}, {0,0,0,0} },
+      { {0,5,5,0}, {0,0,5,5}, {0,0,0,0}, {0,0,0,0} } },
+
+    // Block 6: XX
+    //           XX
+    { { {0,0,6,0}, {0,0,6,6}, {0,0,0,6}, {0,0,0,0} },
+      { {0,0,6,6}, {0,6,6,0}, {0,0,0,0}, {0,0,0,0} },
+      { {0,0,6,0}, {0,0,6,6}, {0,0,0,6}, {0,0,0,0} },
+      { {0,0,6,6}, {0,6,6,0}, {0,0,0,0}, {0,0,0,0} } },
+
+    // Block 7: XXXX
+    { { {0,0,7,0}, {0,0,7,0}, {0,0,7,0}, {0,0,7,0} },
+      { {0,0,0,0}, {7,7,7,7}, {0,0,0,0}, {0,0,0,0} },
+      { {0,0,7,0}, {0,0,7,0}, {0,0,7,0}, {0,0,7,0} },
+      { {0,0,0,0}, {7,7,7,7}, {0,0,0,0}, {0,0,0,0} } }
+};
+
+
 MainWindow::MainWindow(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      curBlockData(0)
 {
-    fieldView = new FieldView(this);
+    fieldView = new FieldView(this, FIELD_COLUMNS, FIELD_ROWS, 32);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(timerTick()));
+    newGame();
 }
 
 MainWindow::~MainWindow()
@@ -15,5 +71,174 @@ MainWindow::~MainWindow()
 
 int MainWindow::idOfStone(FieldView *aFieldView, const int x, const int y)
 {
-    return (qrand() % 8) - 1;
+    int stoneData;
+
+    if (aFieldView == fieldView) {
+        stoneData = field[x][y];
+        if ((stoneData == 0) && (curBlockData != 0)) {
+            // Empty stone data on field... read stone data from block?
+            if ( ( (x >= curX) && (x < curX + BLOCK_MAX_WIDTH) )
+                && (y >= curY) && (y < curY + BLOCK_MAX_HEIGHT) ) {
+                stoneData = (*curBlockData)[x - curX][y - curY];
+            }
+        }
+    } else {
+        stoneData = (blocks[nextBlock][0])[x][y + 2];
+    }
+
+    return stoneData;
+}
+
+void MainWindow::newGame()
+{
+    memset(field, 0, FIELD_COLUMNS * FIELD_ROWS * sizeof(int));
+
+    qsrand(time(NULL));
+    qsrand(qrand());
+
+    nextBlock = qrand() % BLOCK_COUNT;
+    takeNextBlock();
+
+    score = 0;
+    level = 1;
+    fast = false;
+    pause = false;
+    gameOver = false;
+
+    updateTimer();
+    updateViews();
+}
+
+void MainWindow::takeNextBlock()
+{
+    curX = 3;
+    curY = -1;
+    curState = 0;
+    curBlock = nextBlock;
+    nextBlock = qrand() % BLOCK_COUNT;
+    updateBlockData();
+}
+
+void MainWindow::updateBlockData()
+{
+    curBlockData = &blocks[curBlock][curState];
+}
+
+void MainWindow::updateTimer()
+{
+    timer.stop();
+
+    if (!pause && !gameOver) {
+        int msec = fast ? 80 : 1000;
+        timer.start(msec);
+    }
+}
+
+void MainWindow::updateViews()
+{
+    fieldView->update();
+}
+
+void MainWindow::timerTick()
+{
+    curY++;
+    if (checkCollision()) {
+        curY--;
+        copyCurBlockToField();
+        takeNextBlock();
+
+        // game over?
+        if (checkCollision()) {
+            gameOver = true;
+            updateViews();
+            timer.stop();
+
+            //TODO: GameOver message
+        }
+    }
+
+    // Calculate score...
+    int deletedRows = checkRows();
+    for (int i = 1; i <= deletedRows; i++)
+        score += i * 30 * level;
+
+    // Need level update?
+    if (needLevelUpdate()) {
+        level++;
+        updateTimer();
+    }
+
+    updateViews();
+}
+
+bool MainWindow::checkCollision()
+{
+    for (int y = 0; y < BLOCK_MAX_HEIGHT; y++) {
+        for (int x = 0; x < BLOCK_MAX_WIDTH; x++) {
+            if ((*curBlockData)[x][y] != 0) {
+                // Field border collision?
+                if ( ((curX + x) < 0) || ((curX + x) >= FIELD_COLUMNS) || ((curY + y) >= FIELD_ROWS) )
+                    return true;
+
+                // Field stone collision?
+                if ( ((curY + y) >= 0) && field[curX + x][curY + y] != 0 )
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void MainWindow::copyCurBlockToField()
+{
+    for (int y = 0; y < BLOCK_MAX_HEIGHT; y++) {
+        for (int x = 0; x < BLOCK_MAX_WIDTH; x++) {
+            if ((*curBlockData)[x][y] != 0) {
+                field[curX + x][curY + y] = (*curBlockData)[x][y];
+            }
+        }
+    }
+}
+
+int MainWindow::checkRows()
+{
+    int deletedRows = 0;
+    for (int y = 0; y < FIELD_ROWS; y++) {
+        int stoneCount = 0;
+        for (int x = 0; x < FIELD_COLUMNS; x++) {
+            if (field[x][y] != 0) {
+                stoneCount++;
+            }
+        }
+
+        if (stoneCount == FIELD_COLUMNS) {
+            qDebug() << "Full row detected." << stoneCount << FIELD_COLUMNS;
+            deleteRow(y);
+            deletedRows++;
+        }
+    }
+
+    return deletedRows;
+}
+
+void MainWindow::deleteRow(const int aRow)
+{
+    for (int y = aRow; y > 1; y--) {
+        for (int x = 0; x < FIELD_COLUMNS; x++) {
+            field[x][y] = field[x][y-1];
+        }
+    }
+}
+
+bool MainWindow::needLevelUpdate() 
+{
+    if (level >= MAX_LEVEL)
+        return false;
+
+    int scoreLimit = 0;
+    for (int i = 1; i <= level; i++)
+        scoreLimit += 1000 * i;
+
+    return score >= scoreLimit;
 }

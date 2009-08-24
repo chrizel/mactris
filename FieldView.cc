@@ -8,14 +8,15 @@
 #include "FieldView.h"
 #include "MainWindow.h"
 
-FieldView::FieldView(MainWindow *mainWindow)
+FieldView::FieldView(MainWindow *mainWindow, int columns, int rows, 
+                     int block_size)
     : QWidget(mainWindow),
       mainWindow(mainWindow),
-      columns(10),
-      rows(18)
+      columns(columns),
+      rows(rows)
 {
-    const int w = 320;
-    const int h = 576;
+    const int w = block_size * columns;
+    const int h = block_size * rows;
     setMinimumSize(w, h);
     setMaximumSize(w, h);
 
@@ -47,11 +48,11 @@ void FieldView::paintEvent(QPaintEvent * /* event */)
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < columns; x++) {
             int anID = mainWindow->idOfStone(this, x, y);
-            if (anID >= 0) {
+            if (anID > 0) {
                 QRectF stoneRect(QPointF(x * stoneSize.width(),
                                          y * stoneSize.height()),
                                  stoneSize);
-                painter.drawImage(stoneRect, stoneImages[anID]);
+                painter.drawImage(stoneRect, stoneImages[anID - 1]);
             }
         }
     }
