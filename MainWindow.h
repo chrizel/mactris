@@ -16,17 +16,21 @@ const int FIELD_COLUMNS = 10;
 
 typedef int Block[BLOCK_MAX_WIDTH][BLOCK_MAX_HEIGHT];
 
-class QKeyEvent;
 class FieldView;
+class QKeyEvent;
+class QLabel;
 
 class MainWindow : public QWidget
 {
     Q_OBJECT
 
 private:
-    int field[FIELD_COLUMNS][FIELD_ROWS];
+    QLabel *scoreLabel;
+    QLabel *levelLabel;
     FieldView *fieldView;
     FieldView *nextStoneView;
+
+    int field[FIELD_COLUMNS][FIELD_ROWS];
     Block *curBlockData;
 
     int score;

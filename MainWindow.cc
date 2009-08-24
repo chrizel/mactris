@@ -1,7 +1,9 @@
-#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QLabel>
 #include <QMessageBox>
 #include <QTimer>
+#include <QVBoxLayout>
 #include <QWidget>
 #include <QtDebug>
 
@@ -63,14 +65,26 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent),
       curBlockData(0)
 {
+    scoreLabel = new QLabel;
+    scoreLabel->setMinimumWidth(90);
+    levelLabel = new QLabel;
+    levelLabel->setMinimumWidth(90);
     fieldView = new FieldView(this, FIELD_COLUMNS, FIELD_ROWS, 32);
     nextStoneView = new FieldView(this, BLOCK_MAX_WIDTH, BLOCK_MAX_HEIGHT, 8);
 
-    QGridLayout *layout = new QGridLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(fieldView, 0, 0, 4, 2, Qt::AlignLeft | Qt::AlignTop);
-    layout->addWidget(nextStoneView, 0, 2, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    setLayout(layout);
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(new QLabel(tr("Next Stone:")));
+    vbox->addWidget(nextStoneView);
+    vbox->addSpacing(20);
+    vbox->addWidget(scoreLabel);
+    vbox->addWidget(levelLabel);
+    vbox->addStretch();
+
+    QHBoxLayout *hbox = new QHBoxLayout;
+    hbox->setContentsMargins(0, 0, 0, 0);
+    hbox->addWidget(fieldView, 0, Qt::AlignTop);
+    hbox->addLayout(vbox);
+    setLayout(hbox);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timerTick()));
 
@@ -150,6 +164,9 @@ void MainWindow::updateViews()
 {
     fieldView->update();
     nextStoneView->update();
+
+    scoreLabel->setText(tr("Score: <b>%1</b>").arg(score));
+    levelLabel->setText(tr("Level: <b>%1</b>").arg(level));
 }
 
 void MainWindow::timerTick()
