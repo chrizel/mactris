@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
@@ -155,7 +157,10 @@ void MainWindow::updateTimer()
     timer.stop();
 
     if (!pause && !gameOver) {
-        int msec = fast ? 80 : 1000;
+        int msec = fast
+                 ? 80
+                 : 1000 - 1000 * log2((float)level)
+                   / log2((float)MAX_LEVEL + (MAX_LEVEL * 0.3333));
         timer.start(msec);
     }
 }
