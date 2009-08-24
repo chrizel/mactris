@@ -1,3 +1,4 @@
+#include <QGridLayout>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QTimer>
@@ -63,7 +64,16 @@ MainWindow::MainWindow(QWidget *parent)
       curBlockData(0)
 {
     fieldView = new FieldView(this, FIELD_COLUMNS, FIELD_ROWS, 32);
+    nextStoneView = new FieldView(this, BLOCK_MAX_WIDTH, BLOCK_MAX_HEIGHT, 8);
+
+    QGridLayout *layout = new QGridLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(fieldView, 0, 0, 4, 2, Qt::AlignLeft | Qt::AlignTop);
+    layout->addWidget(nextStoneView, 0, 2, 1, 1, Qt::AlignLeft | Qt::AlignTop);
+    setLayout(layout);
+
     connect(&timer, SIGNAL(timeout()), this, SLOT(timerTick()));
+
     newGame();
 }
 
@@ -85,7 +95,7 @@ int MainWindow::idOfStone(FieldView *aFieldView, const int x, const int y)
             }
         }
     } else {
-        stoneData = (blocks[nextBlock][0])[x][y + 2];
+        stoneData = (blocks[nextBlock][0])[x][y+1];
     }
 
     return stoneData;
@@ -139,6 +149,7 @@ void MainWindow::updateTimer()
 void MainWindow::updateViews()
 {
     fieldView->update();
+    nextStoneView->update();
 }
 
 void MainWindow::timerTick()
@@ -222,7 +233,6 @@ int MainWindow::checkRows()
         }
 
         if (stoneCount == FIELD_COLUMNS) {
-            qDebug() << "Full row detected." << stoneCount << FIELD_COLUMNS;
             deleteRow(y);
             deletedRows++;
         }

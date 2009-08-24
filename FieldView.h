@@ -19,7 +19,7 @@ private:
     QList<QImage> stoneImages;
 
 public:
-    FieldView(MainWindow *mainWindow, int columns, int rows, int block_size);
+    FieldView(MainWindow *mainWindow, int columns, int rows, int block_size, QWidget *parent = 0);
     virtual ~FieldView();
 
     void paintEvent(QPaintEvent *event);

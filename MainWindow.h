@@ -26,6 +26,7 @@ class MainWindow : public QWidget
 private:
     int field[FIELD_COLUMNS][FIELD_ROWS];
     FieldView *fieldView;
+    FieldView *nextStoneView;
     Block *curBlockData;
 
     int score;

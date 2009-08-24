@@ -9,8 +9,8 @@
 #include "MainWindow.h"
 
 FieldView::FieldView(MainWindow *mainWindow, int columns, int rows, 
-                     int block_size)
-    : QWidget(mainWindow),
+                     int block_size, QWidget *parent)
+    : QWidget(parent),
       mainWindow(mainWindow),
       columns(columns),
       rows(rows)
