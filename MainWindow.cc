@@ -74,9 +74,10 @@ MainWindow::MainWindow(QWidget *parent)
     levelLabel->setMinimumWidth(90);
 
     fieldView = new GameView(this, FIELD_COLUMNS, FIELD_ROWS, 32);
-    nextStoneView = new FieldView(this, BLOCK_MAX_WIDTH, BLOCK_MAX_HEIGHT, 8);
+    nextStoneView = new FieldView(this, 4, 2, 16);
 
     QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->setContentsMargins(0, 5, 0, 5);
     vbox->addWidget(new QLabel(tr("Next Stone:")));
     vbox->addWidget(nextStoneView);
     vbox->addSpacing(20);
@@ -113,7 +114,7 @@ int MainWindow::idOfStone(FieldView *aFieldView, const int x, const int y)
             }
         }
     } else {
-        stoneData = (blocks[nextBlock][0])[x][y+1];
+        stoneData = (blocks[nextBlock][0])[x][y+2];
     }
 
     return stoneData;

@@ -37,9 +37,6 @@ void FieldView::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
 
-    // Draw background
-    painter.fillRect(rect(), QBrush(QImage("gfx/bg.png")));
-
     // Calculate stone size on basis of bounds
     QSizeF stoneSize(rect().width() / columns,
                      rect().height() / rows);
