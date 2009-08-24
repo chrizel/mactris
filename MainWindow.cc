@@ -266,9 +266,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         curX++;
         break;
     case Qt::Key_Down:
-        fast = true;
-        updateTimer();
-        timerTick();
+        if (!fast) {
+            fast = true;
+            updateTimer();
+            timerTick();
+        }
         break;
     default:
         QWidget::keyPressEvent(event);
@@ -286,7 +288,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if (!pause && !gameOver && (event->key() == Qt::Key_Down)) {
+    if (!pause && 
+        !gameOver && 
+        !event->isAutoRepeat() && 
+        (event->key() == Qt::Key_Down)) 
+    {
         fast = false;
         updateTimer();
         return;
