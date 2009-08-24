@@ -1,11 +1,11 @@
 #include <QApplication>
 
-#include "FieldView.h"
+#include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    FieldView fieldView;
-    fieldView.show();
+    MainWindow mainWindow;
+    mainWindow.show();
     return app.exec();
 }

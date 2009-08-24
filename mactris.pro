@@ -8,5 +8,5 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += FieldView.h
-SOURCES += FieldView.cc main.cc
+HEADERS += MainWindow.h FieldView.h
+SOURCES += MainWindow.cc FieldView.cc main.cc

@@ -6,9 +6,11 @@
 #include <QtDebug>
 
 #include "FieldView.h"
+#include "MainWindow.h"
 
-FieldView::FieldView(QWidget *parent)
-    : QWidget(parent),
+FieldView::FieldView(MainWindow *mainWindow)
+    : QWidget(mainWindow),
+      mainWindow(mainWindow),
       columns(10),
       rows(18)
 {
@@ -44,7 +46,7 @@ void FieldView::paintEvent(QPaintEvent * /* event */)
     // Draw stones
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < columns; x++) {
-            int anID = 0;
+            int anID = mainWindow->idOfStone(this, x, y);
             if (anID >= 0) {
                 QRectF stoneRect(QPointF(x * stoneSize.width(),
                                          y * stoneSize.height()),
