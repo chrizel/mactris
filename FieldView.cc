@@ -20,13 +20,13 @@ FieldView::FieldView(MainWindow *mainWindow, int columns, int rows,
     setMinimumSize(w, h);
     setMaximumSize(w, h);
 
-    stoneImages << QImage("gfx/red_stone.png")
-                << QImage("gfx/green_stone.png")
-                << QImage("gfx/cyan_stone.png")
-                << QImage("gfx/blue_stone.png")
-                << QImage("gfx/yellow_stone.png")
-                << QImage("gfx/orange_stone.png")
-                << QImage("gfx/magenta_stone.png");
+    stoneImages << QImage(":red_stone.png")
+                << QImage(":green_stone.png")
+                << QImage(":cyan_stone.png")
+                << QImage(":blue_stone.png")
+                << QImage(":yellow_stone.png")
+                << QImage(":orange_stone.png")
+                << QImage(":magenta_stone.png");
 }
 
 FieldView::~FieldView()

@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>bg.png</file>
+    <file>red_stone.png</file>
+    <file>green_stone.png</file>
+    <file>cyan_stone.png</file>
+    <file>blue_stone.png</file>
+    <file>yellow_stone.png</file>
+    <file>orange_stone.png</file>
+    <file>magenta_stone.png</file>
+</qresource>
+</RCC>

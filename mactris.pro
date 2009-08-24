@@ -6,6 +6,7 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
+RESOURCES = gfx/gfx.qrc
 
 # Input
 HEADERS += GameView.h MainWindow.h FieldView.h

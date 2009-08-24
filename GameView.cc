@@ -22,7 +22,7 @@ GameView::~GameView()
 void GameView::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), QBrush(QImage("gfx/bg.png")));
+    painter.fillRect(rect(), QBrush(QImage(":bg.png")));
 
     FieldView::paintEvent(event);
 
