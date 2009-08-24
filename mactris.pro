@@ -4,8 +4,11 @@
 
 TEMPLATE = app
 TARGET = 
-DEPENDPATH += .
-INCLUDEPATH += .
+DEPENDPATH += src
+INCLUDEPATH += src
+OBJECTS_DIR = build
+MOC_DIR = build
+RCC_DIR = build
 RESOURCES = gfx/gfx.qrc
 ICON = gfx/icon1.icns
 
