@@ -1,4 +1,5 @@
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QTimer>
 #include <QWidget>
 #include <QtDebug>
@@ -154,7 +155,14 @@ void MainWindow::timerTick()
             updateViews();
             timer.stop();
 
-            //TODO: GameOver message
+            int result = QMessageBox::question(this,
+                tr("Game Over"), tr("Do you like to play again?"),
+                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            if (result == QMessageBox::Yes) {
+                newGame();
+            } else {
+                close();
+            }
         }
     }
 
