@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
+    <file>icon1.png</file>
     <file>bg.png</file>
     <file>red_stone.png</file>
     <file>green_stone.png</file>

@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMessageBox>
@@ -68,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent),
       curBlockData(0)
 {
+    setWindowIcon(QIcon(":icon1.png"));
+
     scoreLabel = new QLabel;
     scoreLabel->setMinimumWidth(90);
     levelLabel = new QLabel;
