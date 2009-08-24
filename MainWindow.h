@@ -16,6 +16,7 @@ const int FIELD_COLUMNS = 10;
 
 typedef int Block[BLOCK_MAX_WIDTH][BLOCK_MAX_HEIGHT];
 
+class QKeyEvent;
 class FieldView;
 
 class MainWindow : public QWidget
@@ -60,6 +61,9 @@ public:
     virtual ~MainWindow();
 
     int idOfStone(FieldView *aFieldView, const int x, const int y);
+
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 protected slots:
     void timerTick();

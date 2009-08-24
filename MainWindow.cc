@@ -1,3 +1,4 @@
+#include <QKeyEvent>
 #include <QTimer>
 #include <QWidget>
 #include <QtDebug>
@@ -241,4 +242,55 @@ bool MainWindow::needLevelUpdate()
         scoreLimit += 1000 * i;
 
     return score >= scoreLimit;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (pause || gameOver) {
+        QWidget::keyPressEvent(event);
+        return;
+    }
+
+    Block *oldBlockData = curBlockData;
+    int oldX = curX,
+        oldY = curY;
+    switch (event->key()) {
+    case Qt::Key_Up:
+        curState = curState >= BLOCK_STATES - 1 ? 0 : curState + 1;
+        updateBlockData();
+        break;
+    case Qt::Key_Left:
+        curX--;
+        break;
+    case Qt::Key_Right:
+        curX++;
+        break;
+    case Qt::Key_Down:
+        fast = true;
+        updateTimer();
+        timerTick();
+        break;
+    default:
+        QWidget::keyPressEvent(event);
+        return;
+    }
+
+    if (checkCollision()) {
+        curBlockData = oldBlockData;
+        curX = oldX;
+        curY = oldY;
+    }
+
+    updateViews();
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if (!pause && !gameOver && (event->key() == Qt::Key_Down)) {
+        fast = false;
+        updateTimer();
+        return;
+    }
+
+    QWidget::keyPressEvent(event);
 }
