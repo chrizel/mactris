@@ -1,0 +1,8 @@
+*.o
+*.swp
+Makefile
+moc_*.cpp
+mactris
+mactris.app/
+*~
+*#
