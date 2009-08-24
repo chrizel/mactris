@@ -23,10 +23,12 @@ void GameView::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.fillRect(rect(), QBrush(QImage(":bg.png")));
+    painter.end();
 
     FieldView::paintEvent(event);
 
     if (mainWindow->isPause() || mainWindow->isGameOver()) {
+        painter.begin(this);
         painter.fillRect(rect(), QColor(0, 0, 0, 153));
 
         if (mainWindow->isPause()) {

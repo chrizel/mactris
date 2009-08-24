@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent),
       curBlockData(0)
 {
+    setWindowTitle(tr("mactris"));
     setWindowIcon(QIcon(":icon1.png"));
 
     scoreLabel = new QLabel;
